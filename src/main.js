@@ -12,9 +12,10 @@ import axios from 'axios'
 import '@/assets/global.less'
 // 设置axios根路径
 axios.defaults.baseURL = 'http://www.liulongbin.top:3008'
-// 2.挂载axios
+// 2.挂载axios到Vue构造函数的原型对象上
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
+// 全局注册组件
 Vue.use(ElementUI)
 new Vue({
   router,
