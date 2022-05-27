@@ -15,7 +15,13 @@
         <el-submenu index="1">
           <template slot="title">
             <!-- 头像 -->
-            <img src="../../assets/logo.png" alt="" class="avatar" />
+            <img
+              :src="userInfo.user_pic"
+              alt=""
+              class="avatar"
+              v-if="userInfo.user_pic"
+            />
+            <img src="../../assets/logo.png" alt="" class="avatar" v-else />
             <span>个人中心</span>
           </template>
           <el-menu-item index="1-1"
@@ -36,7 +42,12 @@
     </el-header>
     <el-container>
       <!-- 侧边栏区域 -->
-      <el-aside width="200px">Aside</el-aside>
+      <el-aside width="200px">
+        <div class="user-box">
+          <img src="../../assets/logo.png" alt="" />
+          <span>欢迎 xxx</span>
+        </div>
+      </el-aside>
       <el-container>
         <!-- 页面主体区域 -->
         <el-main> Main.vue后台主页 </el-main>
@@ -48,6 +59,8 @@
 </template>
 
 <script>
+// 基于 `mapState` 辅助函数，把 Vuex 中的 `userInfo` 数据映射到当前组件中使用：
+import { mapState } from 'vuex'
 export default {
   name: 'Main',
   methods: {
@@ -65,6 +78,13 @@ export default {
         this.$router.push('/login')
       }).catch(err => err)
     }
+  },
+  created () {
+    // 获取用户的基本信息
+    this.$store.dispatch('initUserInfo')
+  },
+  computed: {
+    ...mapState(['userInfo'])
   }
 }
 </script>
@@ -102,5 +122,28 @@ export default {
   background-color: #fff;
   margin-right: 10px;
   object-fit: cover;
+}
+
+// 左侧边栏用户信息区域
+.user-box {
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  user-select: none;
+  img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #fff;
+    margin-right: 15px;
+    object-fit: cover;
+  }
+  span {
+    color: white;
+    font-size: 12px;
+  }
 }
 </style>

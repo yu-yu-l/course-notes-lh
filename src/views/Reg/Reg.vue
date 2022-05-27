@@ -92,15 +92,15 @@ export default {
       regFormRules: {
         username: [
           // required:必填项, message: 提示信息, tigger: 触发条件
-          { required: true, message: '请输入用户名', trigger: blur },
+          { required: true, message: '请输入用户名', trigger: 'blur' },
           { pattern: /^[a-zA-Z][a-zA-Z0-9]{0,9}$/, message: '用户名必须是1~10位的字母或者数字,且必须以字母开头', tigger: blur }
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: blur },
-          { pattern: /^\S{6,15}$/, message: '密码长度必须是6~15位', trigger: blur }
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { pattern: /^\S{6,15}$/, message: '密码长度必须是6~15位', trigger: 'blur' }
         ],
         repassword: [
-          { pattern: /^\S{6,15}$/, message: '密码长度必须是6~15位', trigger: blur },
+          { pattern: /^\S{6,15}$/, message: '密码长度必须是6~15位', trigger: 'blur' },
           { validator: samePwd, trigger: 'blur' }
         ]
       }
