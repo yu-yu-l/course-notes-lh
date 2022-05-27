@@ -13,7 +13,7 @@ import '@/assets/global.less'
 // 设置axios根路径
 axios.defaults.baseURL = 'http://www.liulongbin.top:3008'
 // 2.挂载axios到Vue构造函数的原型对象上
-Vue.prototype.$axios = axios
+Vue.prototype.$http = axios
 Vue.config.productionTip = false
 // 全局注册组件
 Vue.use(ElementUI)

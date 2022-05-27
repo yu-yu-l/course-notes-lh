@@ -1,5 +1,6 @@
 <template>
-  <div>App.vue</div>
+  <!-- 路由的出口 -->
+  <router-view></router-view>
 </template>
 
 <script>
