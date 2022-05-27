@@ -41,7 +41,7 @@
           <el-button type="primary" style="width: 100%" @click="regNewUser"
             >注册</el-button
           >
-          <el-link type="info">去登录</el-link>
+          <el-link type="info" @click="$router.push('/login')">去登录</el-link>
         </el-form-item>
       </el-form>
     </div>
@@ -55,15 +55,15 @@ export default {
     // 绑定事件处理函数
     regNewUser () {
       // this.$refs.regFormRef获取表单内容
-      this.$refs.regFormRef.validate(async (valid) => {
+      this.$refs.regFormRef.validate(async valid => {
         // console.log(valid)
         if (!valid) return   // 未通过校验 全部通过valid为true取反为false
         // console.log('通过校验')
         // 通过校验, 发送请求
-        const {data:res} = await this.$http.post('/api/reg', this.regForm)
+        const { data: res } = await this.$http.post('/api/reg', this.regForm)
         // console.log(res)
         // 注册失败,提示失败消息
-        if(!res.code==0) return this.$message.error(res.message)
+        if (res.code !== 0) return this.$message.error(res.message)
         // 注册成功,提示成功消息,跳转登录页
         this.$message.success(res.message)
         this.$router.push('/login')
