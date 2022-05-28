@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 // 导入登录注册组件
 import Reg from '@/views/Reg/Reg.vue'
 import Login from '@/views/Login/Login.vue'
+// 导入主页组件
 import Main from '@/views/Main/Main.vue'
 Vue.use(VueRouter)
 

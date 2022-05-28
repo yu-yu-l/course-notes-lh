@@ -34,18 +34,18 @@
             ><i class="el-icon-key"></i>重置密码</el-menu-item
           >
         </el-submenu>
-        <el-menu-item index="2"
-          ><i class="el-icon-switch-button" @click="logout"></i
-          >退出</el-menu-item
+        <el-menu-item index="2" @click="logout"
+          ><i class="el-icon-switch-button"></i>退出</el-menu-item
         >
       </el-menu>
     </el-header>
     <el-container>
-      <!-- 侧边栏区域 -->
+      <!-- 左侧边栏区域 -->
       <el-aside width="200px">
         <div class="user-box">
-          <img src="../../assets/logo.png" alt="" />
-          <span>欢迎 xxx</span>
+          <img :src="userInfo.user_pic" alt="" v-if="userInfo.user_pic" />
+          <img src="../../assets/logo.png" alt="" v-else />
+          <span>欢迎 {{ userInfo.nickname || userInfo.username }}</span>
         </div>
       </el-aside>
       <el-container>
@@ -59,28 +59,39 @@
 </template>
 
 <script>
-// 基于 `mapState` 辅助函数，把 Vuex 中的 `userInfo` 数据映射到当前组件中使用：
+// 基于mapState辅助函数，把 Vuex 中的userInfo数据映射到当前组件中使用：
 import { mapState } from 'vuex'
 export default {
   name: 'Main',
   methods: {
     logout () {
-      // 注册退出登录事件
-      this.$confirm('您确认退出登录吗?', '提示', {
+      // 退出登录
+      this.$confirm('您确定退出登录吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message.success('退出登录成功!')
+        this.$message({
+          // 成功之后的提示
+          type: 'success',
+          message: '退出登录成功!',
+
+        })
         // 清空token
         this.$store.commit('updateToken', '')
+        // 清空userInfo
+        this.$store.commit('updateUserInfo', {})
         // 跳转登录页
         this.$router.push('/login')
-      }).catch(err => err)
+      }).catch(() => {
+        // 取消则不提示消息
+      })
     }
   },
   created () {
     // 获取用户的基本信息
+    // 1. 调用actions中的函数
+    // this.$store.dispatch('actions中的函数名)
     this.$store.dispatch('initUserInfo')
   },
   computed: {
@@ -113,16 +124,6 @@ export default {
     justify-content: center;
     align-items: center;
   }
-}
-
-.avatar {
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  background-color: #fff;
-  margin-right: 10px;
-  object-fit: cover;
-}
 
 // 左侧边栏用户信息区域
 .user-box {
@@ -146,4 +147,16 @@ export default {
     font-size: 12px;
   }
 }
+}
+
+.avatar {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  background-color: #fff;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+
 </style>

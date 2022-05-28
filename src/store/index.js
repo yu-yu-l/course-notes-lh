@@ -23,23 +23,26 @@ export default new Vuex.Store({
     updateToken(state, newToken) {
       state.token = newToken
     },
-    // 2.3 更新用户信息
+    // 2.3 定义更新userInfo的函数
     updateUserInfo(state, info) {
       state.userInfo = info
+      // console.log(state.userInfo)
+
     }
   },
   // 异步操作数据的地方
   actions: {
-    // 2.4 定义初始化用户基本信息的action函数
-    async initUserInfo(context) {
+    // 定义发送请求, 获取用户信息
+    async initUserInfo (context) {
+      // context: 是store的实例对象
       const {data:res} = await axios.get('/my/userinfo', {
-        header: {
-          // 需要在请求头中携带 Authorization 身份认证字段，才能正常访问成功
+        headers: {
           Authorization: context.state.token
         }
       })
-      if (res.code === 0) {
-        context.commit('initUserInfo', res.data)
+      if(res.code === 0) {
+        // 将获取到的信息保存到vuex中的res.data
+        context.commit('updateUserInfo', res.data)
       }
     }
   },
