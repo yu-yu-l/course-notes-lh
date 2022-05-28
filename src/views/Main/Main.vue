@@ -47,10 +47,47 @@
           <img src="../../assets/logo.png" alt="" v-else />
           <span>欢迎 {{ userInfo.nickname || userInfo.username }}</span>
         </div>
+        <el-menu
+          default-active="/home"
+          class="el-menu-vertical-demo"
+          background-color="#23262E"
+          text-color="#fff"
+          active-text-color="#409EFF"
+          unique-opened
+          router
+        >
+          <!--unique-opened 是否只保持一个子菜单的展开 -->
+          <template v-for="item in menusList">
+            <!-- 用template标签包裹 -->
+            <!-- 不包含子菜单的“一级菜单” -->
+            <el-menu-item
+              :index="item.indexPath"
+              :key="item.indexPath"
+              v-if="!item.children"
+              ><i :class="item.icon"></i>{{ item.title }}</el-menu-item
+            >
+            <!-- 包含子菜单的“一级菜单” -->
+            <el-submenu :index="item.indexPath" :key="item.indexPath" v-else>
+              <template slot="title">
+                <i :class="item.icon"></i>
+                <span>{{ item.title }}</span>
+              </template>
+              <el-menu-item
+                :index="childItem.indexPath"
+                v-for="childItem in item.children"
+                :key="childItem.indexPath"
+                ><i :class="childItem.icon"></i
+                >{{ childItem.title }}</el-menu-item
+              >
+            </el-submenu>
+          </template>
+        </el-menu>
       </el-aside>
       <el-container>
         <!-- 页面主体区域 -->
-        <el-main> Main.vue后台主页 </el-main>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
         <!-- 底部 footer 区域 -->
         <el-footer>© www.itheima.com - 黑马程序员</el-footer>
       </el-container>
@@ -63,6 +100,12 @@
 import { mapState } from 'vuex'
 export default {
   name: 'Main',
+  data () {
+    return {
+      // 保存菜单列表
+      menusList: []
+    }
+  },
   methods: {
     logout () {
       // 退出登录
@@ -86,16 +129,33 @@ export default {
       }).catch(() => {
         // 取消则不提示消息
       })
+    },
+    // 初始化菜单数据
+    async initMenus () {
+      // 发送请求
+      const { data: res } = await this.$http.get('/my/menus')
+      console.log(res)
+      this.menusList = res.data
     }
   },
   created () {
-    // 获取用户的基本信息
-    // 1. 调用actions中的函数
-    // this.$store.dispatch('actions中的函数名)
-    this.$store.dispatch('initUserInfo')
+
+    // 判断是否有token
+    if (this.token) {
+      // 如果有token, 可以请求数据
+      // 获取用户的基本信息
+      // 1. 调用actions中的函数
+      // this.$store.dispatch('actions中的函数名)
+      this.$store.dispatch('initUserInfo')
+      this.initMenus()
+    }else {
+      // 如果没有token就跳转到登录页
+      this.$router.push('/login')
+    }
   },
   computed: {
-    ...mapState(['userInfo'])
+    // 通过计算属性获取token的值
+    ...mapState(['userInfo', 'token'])
   }
 }
 </script>
@@ -125,28 +185,37 @@ export default {
     align-items: center;
   }
 
-// 左侧边栏用户信息区域
-.user-box {
-  height: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
-  user-select: none;
-  img {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    background-color: #fff;
-    margin-right: 15px;
-    object-fit: cover;
+  // 左侧边栏用户信息区域
+  .user-box {
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    user-select: none;
+    img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background-color: #fff;
+      margin-right: 15px;
+      object-fit: cover;
+    }
+    span {
+      color: white;
+      font-size: 12px;
+    }
   }
-  span {
-    color: white;
-    font-size: 12px;
+
+  // 侧边栏菜单的样式
+  .el-aside {
+    .el-submenu,
+    .el-menu-item {
+      width: 200px;
+      user-select: none;
+    }
   }
-}
 }
 
 .avatar {
@@ -157,6 +226,4 @@ export default {
   margin-right: 10px;
   object-fit: cover;
 }
-
-
 </style>

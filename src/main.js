@@ -15,6 +15,36 @@ axios.defaults.baseURL = 'http://www.liulongbin.top:3008'
 // 2.挂载axios到Vue构造函数的原型对象上
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
+// 添加请求拦截器
+axios.interceptors.request.use(function (config) {
+  // 在发送请求之前做些什么
+  // startsWith() 用来判断字符串是否以固定数据开头
+  if(config.url.startsWith('/my')) {
+    // 设置统一的headers
+    config.headers.Authorization = store.state.token
+    console.log(config)
+  }
+  return config
+}, function (error) {
+  // 对请求错误做些什么
+  return Promise.reject(error);
+})
+// 添加响应拦截器
+axios.interceptors.response.use(function (response) {
+  // 对响应数据做点什么
+  return response;
+}, function (error) {
+  // 对响应错误做点什么
+  // console.log(error)
+  if(error.request.status === 401) {
+    //清空token和用户信息
+    store.commit('updateToken', '')
+    store.commit('updateUserInfo', {})
+    // 跳转登录页
+    router.push('/login')
+  }
+  return Promise.reject(error);
+});
 // 全局注册组件
 Vue.use(ElementUI)
 new Vue({

@@ -35,11 +35,7 @@ export default new Vuex.Store({
     // 定义发送请求, 获取用户信息
     async initUserInfo (context) {
       // context: 是store的实例对象
-      const {data:res} = await axios.get('/my/userinfo', {
-        headers: {
-          Authorization: context.state.token
-        }
-      })
+      const {data:res} = await axios.get('/my/userinfo')
       if(res.code === 0) {
         // 将获取到的信息保存到vuex中的res.data
         context.commit('updateUserInfo', res.data)

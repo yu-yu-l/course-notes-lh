@@ -1,6 +1,6 @@
 # vue大事件项目
 
-[项目演示地址](http://www.escook.cn:06/ev/#/login)
+[项目演示地址](http://liulongbin.top:8086/login)
 
 [接口文档](https://www.showdoc.com.cn/1425457596992351/697262026446225)
 
