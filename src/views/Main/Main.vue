@@ -47,8 +47,9 @@
           <img src="../../assets/logo.png" alt="" v-else />
           <span>欢迎 {{ userInfo.nickname || userInfo.username }}</span>
         </div>
+        <!-- $route当前组件的路由对象 -->
         <el-menu
-          default-active="/home"
+          :default-active="$route.path"
           class="el-menu-vertical-demo"
           background-color="#23262E"
           text-color="#fff"

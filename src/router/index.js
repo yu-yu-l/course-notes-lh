@@ -9,6 +9,8 @@ import Home from '@/views/Menus/Home/Home.vue'
 import Main from '@/views/Main/Main.vue'
 // 导入用户信息组件
 import UserInfo from '@/views/Menus/User/UserInfo.vue'
+// 导入头像组件
+import UserAvatar from '@/views/Menus/User/UserAvatar.vue'
 Vue.use(VueRouter)
 //防止路由报错
 const originalPush = VueRouter.prototype.push
@@ -26,7 +28,10 @@ const routes = [
     // home为子路由
     { path: 'home', component: Home },
     // 用户信息子路由
-    { path: 'user-info', component: UserInfo }
+    { path: 'user-info', component: UserInfo },
+    // 头像子路由
+    { path: 'user-avatar', component: UserAvatar }
+
   ]
 },
   
