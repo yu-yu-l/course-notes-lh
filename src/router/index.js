@@ -11,6 +11,8 @@ import Main from '@/views/Main/Main.vue'
 import UserInfo from '@/views/Menus/User/UserInfo.vue'
 // 导入头像组件
 import UserAvatar from '@/views/Menus/User/UserAvatar.vue'
+// 导入重置密码模块
+import UserPwd from '@/views/Menus/User/UserPwd.vue'
 Vue.use(VueRouter)
 //防止路由报错
 const originalPush = VueRouter.prototype.push
@@ -30,7 +32,8 @@ const routes = [
     // 用户信息子路由
     { path: 'user-info', component: UserInfo },
     // 头像子路由
-    { path: 'user-avatar', component: UserAvatar }
+    { path: 'user-avatar', component: UserAvatar },
+    { path: 'user-pwd', component: UserPwd }
 
   ]
 },
