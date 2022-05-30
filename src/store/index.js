@@ -27,8 +27,8 @@ export default new Vuex.Store({
     updateUserInfo(state, info) {
       state.userInfo = info
       // console.log(state.userInfo)
-
-    }
+    },
+    
   },
   // 异步操作数据的地方
   actions: {

@@ -13,6 +13,10 @@ import UserInfo from '@/views/Menus/User/UserInfo.vue'
 import UserAvatar from '@/views/Menus/User/UserAvatar.vue'
 // 导入重置密码模块
 import UserPwd from '@/views/Menus/User/UserPwd.vue'
+// 导入文章分类模块
+import ArtCate from '@/views/Menus/Article/ArtCate.vue'
+// 导入文章列表模块
+import ArtList from '@/views/Menus/Article/ArtList.vue'
 Vue.use(VueRouter)
 //防止路由报错
 const originalPush = VueRouter.prototype.push
@@ -33,8 +37,11 @@ const routes = [
     { path: 'user-info', component: UserInfo },
     // 头像子路由
     { path: 'user-avatar', component: UserAvatar },
-    { path: 'user-pwd', component: UserPwd }
-
+    { path: 'user-pwd', component: UserPwd },
+    // 文章子路由
+    { path: 'art-cate', component: ArtCate },
+    // 文章列表子路由
+    { path: 'art-list', component: ArtList }
   ]
 },
   

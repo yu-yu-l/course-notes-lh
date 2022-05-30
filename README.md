@@ -4,7 +4,7 @@
 
 [接口文档](https://www.showdoc.com.cn/1425457596992351/697262026446225)
 
-[接口根路径](http://www.liulongbin.top:300)
+[接口根路径](http://big-event-vue-api-t.itheima.net)
 
 ## 1.项目前置准备
 

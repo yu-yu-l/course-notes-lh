@@ -10,8 +10,22 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 // 导入全局样式表
 import '@/assets/global.less'
+// 导入富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+// 导入富文本编辑器的样式
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+// 导入时间组件
+import dayjs from 'dayjs'
+// 定义全局过滤器
+Vue.filter('dataForamt', (dt) => {
+  return dayjs(dt).format('YYYY-MM-DD HH:mm;ss')
+})
+// 全局注册富文本编辑器
+Vue.use(VueQuillEditor)
 // 设置axios根路径
-axios.defaults.baseURL = 'http://www.liulongbin.top:3008'
+axios.defaults.baseURL = 'http://big-event-vue-api-t.itheima.net'
 // 2.挂载axios到Vue构造函数的原型对象上
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
