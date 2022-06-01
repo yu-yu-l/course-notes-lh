@@ -48,6 +48,7 @@
           <span>欢迎 {{ userInfo.nickname || userInfo.username }}</span>
         </div>
         <!-- $route当前组件的路由对象 -->
+        <!-- default-active设置默认激活，router属性开启路由模式 -->
         <el-menu
           :default-active="$route.path"
           class="el-menu-vertical-demo"
@@ -118,8 +119,7 @@ export default {
         this.$message({
           // 成功之后的提示
           type: 'success',
-          message: '退出登录成功!',
-
+          message: '退出登录成功!'
         })
         // 清空token
         this.$store.commit('updateToken', '')
@@ -136,11 +136,12 @@ export default {
       // 发送请求
       const { data: res } = await this.$http.get('/my/menus')
       console.log(res)
-      this.menusList = res.data
+      if(res.code === 0) {
+        this.menusList = res.data
+      }
     }
   },
   created () {
-
     // 判断是否有token
     if (this.token) {
       // 如果有token, 可以请求数据

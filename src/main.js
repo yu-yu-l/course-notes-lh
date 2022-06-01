@@ -16,12 +16,7 @@ import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
-// 导入时间组件
-import dayjs from 'dayjs'
-// 定义全局过滤器
-Vue.filter('dataForamt', (dt) => {
-  return dayjs(dt).format('YYYY-MM-DD HH:mm;ss')
-})
+
 // 全局注册富文本编辑器
 Vue.use(VueQuillEditor)
 // 设置axios根路径
@@ -57,8 +52,8 @@ axios.interceptors.response.use(function (response) {
     // 跳转登录页
     router.push('/login')
   }
-  return Promise.reject(error);
-});
+  return Promise.reject(error)
+})
 // 全局注册组件
 Vue.use(ElementUI)
 new Vue({

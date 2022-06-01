@@ -37,8 +37,9 @@ const routes = [
     { path: 'user-info', component: UserInfo },
     // 头像子路由
     { path: 'user-avatar', component: UserAvatar },
+    // 密码子路由
     { path: 'user-pwd', component: UserPwd },
-    // 文章子路由
+    // 文章分类子路由
     { path: 'art-cate', component: ArtCate },
     // 文章列表子路由
     { path: 'art-list', component: ArtList }

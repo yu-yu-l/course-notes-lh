@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+// 永久储vuex
 import createPersistedState from 'vuex-persistedstate'
 // 2. 获取用户基本信息
 // 2.1 导入axios
@@ -15,8 +16,7 @@ export default new Vuex.Store({
     // 2.2 定义用户信息对象
     userInfo: {}
   },
-  getters: {
-  },
+  getters: {},
   // 唯一同步更新数据的地方
   mutations: {
     // 更新token
@@ -27,21 +27,19 @@ export default new Vuex.Store({
     updateUserInfo(state, info) {
       state.userInfo = info
       // console.log(state.userInfo)
-    },
-    
+    }
   },
   // 异步操作数据的地方
   actions: {
     // 定义发送请求, 获取用户信息
-    async initUserInfo (context) {
+    async initUserInfo(context) {
       // context: 是store的实例对象
-      const {data:res} = await axios.get('/my/userinfo')
-      if(res.code === 0) {
+      const { data: res } = await axios.get('/my/userinfo')
+      if (res.code === 0) {
         // 将获取到的信息保存到vuex中的res.data
         context.commit('updateUserInfo', res.data)
       }
     }
   },
-  modules: {
-  }
+  modules: {}
 })

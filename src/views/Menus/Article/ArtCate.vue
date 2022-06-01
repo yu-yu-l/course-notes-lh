@@ -30,7 +30,6 @@
       </el-table>
     </el-card>
     <!-- 添加分类的对话框 -->
-    <!-- 关闭对话框时重置表单 -->
     <el-dialog
       title="添加文章分类"
       @closed="$refs.addFormRef.resetFields()"
@@ -55,6 +54,8 @@
         <el-button type="primary" @click="addCate">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 关闭对话框时重置表单 -->
+    
     <!-- 修改分类的对话框 -->
     <!-- 修改的表单 -->
     <el-dialog
@@ -185,9 +186,10 @@ export default {
 
     }
   },
-  created () {
+  created() {
     this.initArtCateList()
   }
+  
 }
 </script>
 

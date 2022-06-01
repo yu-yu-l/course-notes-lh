@@ -13,7 +13,12 @@
               placeholder="请选择分类"
               size="small"
             >
-              <el-option v-for="item in getList" :key="item.id" :label="item.cate_name" :value="item.id"></el-option>
+              <el-option
+                v-for="item in getList"
+                :key="item.id"
+                :label="item.cate_name"
+                :value="item.id"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="发布状态" style="margin-left: 15px">
@@ -23,8 +28,12 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="initArtList">筛选</el-button>
-            <el-button type="info" size="small" @click="resetList">重置</el-button>
+            <el-button type="primary" size="small" @click="initArtList"
+              >筛选</el-button
+            >
+            <el-button type="info" size="small" @click="resetList"
+              >重置</el-button
+            >
           </el-form-item>
         </el-form>
         <!-- 发表文章的按钮 -->
@@ -111,18 +120,50 @@
       </div>
 
       <!-- 文章表格区域 -->
-      <!-- 文章表格区域 -->
       <el-table :data="artList" style="width: 100%" border stripe>
-        <el-table-column label="文章标题" prop="title"></el-table-column>
+        <el-table-column label="文章标题" prop="title">
+          <template v-slot="{ row }">
+            <el-link type="primary" @click="showDatial(row.id)">
+              {{ row.title }}
+            </el-link>
+          </template>
+        </el-table-column>
         <el-table-column label="分类" prop="cate_name"></el-table-column>
         <el-table-column label="发表时间" prop="pub_date">
           <template v-slot="{ row }">
-            {{ row.pub_date | dateFormat }}
+            {{ formDate(row.pub_date) }}
           </template>
         </el-table-column>
         <el-table-column label="状态" prop="state"></el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="操作">
+          <template v-slot="{ row }">
+            <el-button type="danger" size="mini" @click="deleteArt(row.id)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
+      <!-- 查看文章详情的对话框 -->
+      <el-dialog title="文章预览" :visible.sync="detailVisible" width="80%">
+        <h1 class="title">{{ article.title }}</h1>
+
+        <div class="info">
+          <span>作者：{{ article.nickname || article.username }}</span>
+          <span>发布时间：{{ formDate(article.pub_date) }}</span>
+          <span>所属分类：{{ article.cate_name }}</span>
+          <span>状态：{{ article.state }}</span>
+        </div>
+
+        <!-- 分割线 -->
+        <el-divider></el-divider>
+
+        <img
+          :src="'http://big-event-vue-api-t.itheima.net' + article.cover_img"
+          alt=""
+        />
+
+        <div v-html="article.content"></div>
+      </el-dialog>
       <!-- 分页区域 -->
       <!-- 分页区域 -->
       <el-pagination
@@ -140,12 +181,16 @@
 </template>
 
 <script>
+// 导入时间组件
+import dayjs from 'dayjs'
 // 导入默认的封面图片
 import defaultImg from '@/assets/images/cover.jpg'
 export default {
   name: 'ArtList',
   data () {
     return {
+      // 文章详情
+      article: [],
       // 查询参数对象
       q: {
         pagenum: 1,
@@ -179,12 +224,14 @@ export default {
       // 文章列表数据
       artList: [],
       // 总数据条数
-      total: ''
+      total: 0,
+      // 文章详情弹框
+      detailVisible: false
     }
   },
   methods: {
     // 重置按钮
-    resetList() {
+    resetList () {
       this.q = {
         pagenum: 1,
         pagesize: 2,
@@ -220,7 +267,7 @@ export default {
 
       })
       if (res.code !== 0) return this.$message.error('获取文章列表数据失败！')
-      this.atrList = res.data
+      this.artList = res.data
       this.total = res.total
     },
     onloadCover (e) {
@@ -231,11 +278,14 @@ export default {
         this.pubForm.cover_img = null
         // 设置封面的默认地址
         this.$refs.imgRef.setAttribute('src', defaultImg)
+
       } else {
         this.pubForm.cover_img = files[0]
         const url = URL.createObjectURL(files[0])
         this.$refs.imgRef.setAttribute('src', url)
         // element.setAttribute(name, value) 将value新值赋值给name,
+        // 清空value
+        e.target.value = ''
       }
     },
     onloadClosed () {
@@ -254,51 +304,85 @@ export default {
       // 设置发布状态
       this.pubForm.state = state
       // 表单预校验
-      this.$refs.pubFormRef.validate(valid => {
+      this.$refs.pubFormRef.validate(async valid => {
         if (!valid) return this.$message.error('请完善信息')
         // 判断文章封面
         if (!this.pubForm.cover_img) return this.$message.error('请添加封面')
         // 发布文章
-        console.log(this.pubForm)
-        // 调用函数 发布文章
+        // console.log(this.pubForm)
+        // 发送请求
+        // 创建 FormData 对象
+        const fd = new FormData()
+        // 向 FormData 中追加数据
+        Object.keys(this.pubForm).forEach(key => {
+          fd.append(key, this.pubForm[key])
+        })
+        // 发送请求
+        const { data: res } = await this.$http.post('/my/article/add', fd)
+        if (res.code !== 0) return this.$message.error(res.message)
+        this.$message.success(res.message)
+        // 重新获取列表
         this.initArtList()
+        // 关闭对话框
+        this.pubDialogVisible = false
       })
     },
-    // 封装发布文章的postArticle函数
-    async postArticle () {
-      // 创建 FormData 对象
-      const fd = new FormData()
-      // 向 FormData 中追加数据
-      Object.keys(this.pubForm).forEach(key => {
-        fd.append(key, this.pubForm[key])
-      })
-      // 发起请求
-      const { data: res } = await this.$http.post('/my/article/add', fd)
-      if (res.code !== 0) return this.$message.error('发布文章失败')
-      this.$message.success('发布文章成功')
-      // 关闭对话框
-      this.pubDialogVisible = false
-      // 刷新文章列表数据
-      this.initArtList()
-    },
-    // 页面跳转时触发
-    handleCurrentChange(newPage) {
+
+    // 切换当前页时触发
+    handleCurrentChange (newPage) {
       // 设置q对象中pagenum页数
       this.q.pagenum = newPage
       // 重新获取文章数据
       this.initArtList()
     },
-    // 声明 handleSizeChange 函数
-    handleSizeChange(newSize) {
+    // 声明 handleSizeChange 函数 切换每条页数时触发
+    handleSizeChange (newSize) {
       // 为pagesize赋值
+      this.q.pagenum = 1
       this.q.pagesize = newSize
-      // 默认展示第一页的数据
-      this.pagenum = 1
       // 重新获取文章数据
       this.initArtList()
+    },
+    //定义时间函数 需要return
+    formDate (time) {
+      return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+    },
+    // 文章详情 注册点击事件 + 发送请求 + data函数中定义数据项
+    async showDatial (id) {
+      const { data: res } = await this.$http.get('/my/article/info', {
+        params: { id }
+      })
+      if (res.code === 0) {
+        this.article = res.data
+        console.log(this.article)
+        this.detailVisible = true
+      }
+    },
+    // 删除文章 询问对话框 + 发送请求  + 刷新列表
+    deleteArt (id) {
+      // 询问是否删除
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(
+        async () => {
+          // 发送请求
+          const { data: res } = await this.$http.delete('/my/article/info', {
+            params: { id }
+          })
+          if (res.code !== 0) return this.$message.error(res.message)
+          this.$message.success(res.message)
+          // 如果刷新之前 当前页的数据只有1条且当前页码大于1则q.pagenum要减1
+          if (this.artList.length === 1 && this.q.pagenum > 1) {
+            this.q.pagenum--
+          }
+          this.initArtList()
+        }).catch(() => {
+          // 删除失败
+        })
     }
   },
-
 
   created () {
     this.getCateList()
@@ -330,5 +414,20 @@ export default {
 }
 .el-pagination {
   margin-top: 15px;
+}
+// 文章详情弹框
+.title {
+  font-size: 24px;
+  text-align: center;
+  font-weight: normal;
+  color: #000;
+  margin: 0 0 10px 0;
+}
+
+.info {
+  font-size: 12px;
+  span {
+    margin-right: 20px;
+  }
 }
 </style>
